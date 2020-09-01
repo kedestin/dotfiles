@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 ANTIBODY=antibody
 PLUGINS=~/.zsh_plugins.sh
@@ -15,7 +15,7 @@ if [[ ! -f "$PLUGINS" ]] || [[ "$PLUGINS" -ot "$THISFILE" ]]; then
         # Setup pure theme
         mafredri/zsh-async
         # sindresorhus/pure
-        subnixr/minimal
+        kedestin/minimalxx
 
         # zsh niceties
         zsh-users/zsh-completions
@@ -40,17 +40,17 @@ fi
 # alias ls='ls --color=auto'
 source $PLUGINS
 
-export ZSH_AUTOSUGGEST_STRATEGY=(completion)
+ZSH_AUTOSUGGEST_STRATEGY=(completion)
 export ZSH_AUTOSUGGEST_USE_ASYNC=1
 
-export MNML_PROMPT=(mnml_pyenv mnml_status)
+MNML_PROMPT=(mnml_pyenv mnml_status)
 # export MNML_RPROMPT=(mnml_ssh 'mnml_cwd 2 0' mnml_git)
-export MNML_RPROMPT=('mnml_cwd 2 0' mnml_git)
+MNML_RPROMPT=('mnml_cwd 2 0' mnml_git)
 export MNML_USER_CHAR=❯❯❯
 
 
 export AUTO_LS_NEWLINE=false
-export AUTO_LS_COMMANDS=(ls)
+AUTO_LS_COMMANDS=(ls)
 
 autoload -U compinit && compinit
 
