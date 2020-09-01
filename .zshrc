@@ -12,9 +12,10 @@ if [[ ! -f "$PLUGINS" ]] || [[ "$PLUGINS" -ot "$THISFILE" ]]; then
 
         # Generate plugins file
         $ANTIBODY bundle > "$PLUGINS" <<- PLUGIN_LIST
-        # Setup pure theme
+        # Setup theme
         mafredri/zsh-async
         # sindresorhus/pure
+        # subnixr/minimal
         kedestin/minimalxx
 
         # zsh niceties
@@ -24,6 +25,8 @@ if [[ ! -f "$PLUGINS" ]] || [[ "$PLUGINS" -ot "$THISFILE" ]]; then
         hlissner/zsh-autopair
         ohmyzsh/ohmyzsh path:plugins/z
         desyncr/auto-ls
+
+        juanrgon/yadm-zsh
 PLUGIN_LIST
 
 
