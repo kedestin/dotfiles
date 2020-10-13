@@ -14,19 +14,18 @@ if [[ ! -f "$PLUGINS" ]] || [[ "$PLUGINS" -ot "$THISFILE" ]]; then
         $ANTIBODY bundle > "$PLUGINS" <<- PLUGIN_LIST
         # Setup theme
         mafredri/zsh-async
-        # sindresorhus/pure
-        # subnixr/minimal
         kedestin/minimalxx
 
         # zsh niceties
-        zsh-users/zsh-completions
-        zsh-users/zsh-autosuggestions
-        zdharma/fast-syntax-highlighting
         hlissner/zsh-autopair
+        kedestin/auto-ls
         ohmyzsh/ohmyzsh path:plugins/z
-        desyncr/auto-ls
-
-        juanrgon/yadm-zsh
+        popstas/zsh-command-time
+        Tarrasch/zsh-autoenv # cd gets really slow if allowed to look up
+        Tarrasch/zsh-functional
+        zsh-users/zsh-autosuggestions
+        zsh-users/zsh-completions
+        zsh-users/zsh-syntax-highlighting
 PLUGIN_LIST
 
 
@@ -43,6 +42,12 @@ fi
 # alias ls='ls --color=auto'
 source $PLUGINS
 
+AUTOENV_LOOK_UPWARDS=0
+
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main)
+ZSH_HIGHLIGHT_DIRS_BLACKLIST+=(/)
+ZSH_HIGHLIGHT_STYLES[path]='fg=cyan'
+
 ZSH_AUTOSUGGEST_STRATEGY=(completion)
 export ZSH_AUTOSUGGEST_USE_ASYNC=1
 
@@ -51,6 +56,9 @@ MNML_PROMPT=(mnml_pyenv mnml_status)
 MNML_RPROMPT=('mnml_cwd 2 0' mnml_git)
 export MNML_USER_CHAR=❯❯❯
 
+
+ZSH_COMMAND_TIME_MSG="elapsed %s"
+ZSH_COMMAND_TIME_COLOR="blue"
 
 export AUTO_LS_NEWLINE=false
 AUTO_LS_COMMANDS=(ls)
@@ -106,3 +114,7 @@ setopt PROMPT_SUBST
 
 # ===========
 # ===========
+
+function gradescope() {
+    code --folder-uri "vscode-remote://ssh-remote+$2:$4/autograder" -n
+}
