@@ -35,7 +35,7 @@ MNML_PROMPT=(mnml_pyenv mnml_status)
 # export MNML_RPROMPT=(mnml_ssh 'mnml_cwd 2 0' mnml_git)
 MNML_RPROMPT=('mnml_cwd 2 0' mnml_git)
 export MNML_USER_CHAR=❯❯❯
-
+export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 ZSH_COMMAND_TIME_MSG="elapsed %s"
 ZSH_COMMAND_TIME_COLOR="blue"
