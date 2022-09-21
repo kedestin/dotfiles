@@ -13,7 +13,7 @@ zcomet load 'hlissner/zsh-autopair'
 zcomet load 'kedestin/auto-ls'
 zcomet load 'agkozak/zsh-z'
 zcomet load 'popstas/zsh-command-time'
-zcomet load 'Tarrasch/zsh-autoenv' # cd gets really slow if allowed to look up
+zcomet load 'kedestin/zsh-autoenv' # cd gets really slow if allowed to look up
 zcomet load 'Tarrasch/zsh-functional'
 zcomet load 'zsh-users/zsh-autosuggestions'
 zcomet load 'zsh-users/zsh-completions'
