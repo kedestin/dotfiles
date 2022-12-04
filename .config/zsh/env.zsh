@@ -1,10 +1,11 @@
 #!/usr/bin/env zsh
 
 
-envdir="${0:a:h}/env.d"
+local envdir="${0:a:h}/env.d"
+local -a envFiles
+envFiles=(ls nvm pyenv ripgrep)
 
 
-
-source "$envdir/ls.zsh"
-source "$envdir/nvm.zsh"
-source "$envdir/pyenv.zsh"
+for envFile in $envFiles; do
+	source "$envdir/$envFile.zsh"
+done
