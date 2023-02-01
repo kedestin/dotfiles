@@ -2,4 +2,5 @@
         path=config.d/delta.gitconfig
         path=config.d/vscode.gitconfig
 
-
+[alias]
+    root=rev-parse --show-toplevel
