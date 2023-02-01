@@ -21,8 +21,8 @@ export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
 
 # Set default applications
-export VISUAL='vim'  
-export EDITOR='vim' 
+export VISUAL='hx'
+export EDITOR="$VISUAL"
 export PAGER='less'
 
 
