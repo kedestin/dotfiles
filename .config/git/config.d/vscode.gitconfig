@@ -1,5 +1,3 @@
-[core]
-        editor = code --wait
 [diff]
         tool = vscode
 [difftool "vscode"]
