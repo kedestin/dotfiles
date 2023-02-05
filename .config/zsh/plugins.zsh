@@ -1,8 +1,15 @@
-if [[ ! -f ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh ]]; then
-  command git clone https://github.com/agkozak/zcomet.git ${ZDOTDIR:-${HOME}}/.zcomet/bin
-fi
+# zcomet installation and initialization
+function () {
+  local ZCOMETDIR="${XDG_DATA_HOME:-${HOME}/.local/share}/zcomet"
 
-source ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh
+  zstyle ':zcomet:' home-dir "$ZCOMETDIR"
+
+  if [[ ! -f "${ZCOMETDIR}/bin/zcomet.zsh" ]]; then
+    command git clone https://github.com/agkozak/zcomet.git "${ZCOMETDIR}/bin"
+  fi
+
+  source "${ZCOMETDIR}/bin/zcomet.zsh"
+}
 
 # Setup theme
 zcomet load 'mafredri/zsh-async'
