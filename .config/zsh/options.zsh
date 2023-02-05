@@ -29,6 +29,10 @@ setopt HIST_REDUCE_BLANKS
 # Include more information about when the command was executed, etc
 setopt EXTENDED_HISTORY
 
+# Remove command lines from the history list when the first character on
+# the line is a space, or when one of the expanded aliases contains a leading space.
+setopt HIST_IGNORE_SPACE
+
 # ===== Completion 
 
 # Allow completion from within a word/phrase

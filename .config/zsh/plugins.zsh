@@ -25,7 +25,7 @@ zcomet load 'Tarrasch/zsh-functional'
 zcomet load 'zsh-users/zsh-autosuggestions'
 zcomet load 'zsh-users/zsh-completions'
 zcomet load 'zsh-users/zsh-syntax-highlighting'
-
+zcomet load "${XDG_DATA_HOME}/zsh/personal/plugins/fancy-ctrl-z"
 
 # Plugin Config
 
