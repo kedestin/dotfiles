@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+
+# https://stackoverflow.com/questions/73270562#73356136
+
+if (($CURRENT == 2)); then
+  local GIT_CLONE_AS_IDENTITY_DIR="${GIT_CLONE_AS_IDENTITY_DIR:-${XDG_CONFIG_DIR:-${HOME}/.config}/git/identities}"
+  local identities=(${GIT_CLONE_AS_IDENTITY_DIR}/*(N:t:r))
+  # Complete using files or identities from identities dir
+  _alternative 'files:filename:_files' 'arg:custom arg:(${(u)identities})'
+elif (($CURRENT > 2)); then
+  # Rewrite words to turn "git clone-as identity ..." to "git clone ..."
+  words=("${words[1]}" clone "${(@)words[3,$#words]}")
+
+  # used to relaunch the completion context after words was modified
+  # https://zsh.sourceforge.io/Doc/Release/Completion-System.html#index-_005fnormal
+  _normal -p git-clone-as
+  return 
+fi

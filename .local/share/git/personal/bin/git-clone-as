@@ -1,0 +1,45 @@
+#!/usr/bin/env sh
+
+
+if [ "$#" -eq 0 ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    cat <<EOF
+usage: git clone-as [-h] identity git_clone_args [git_clone_args ...]
+
+Convenience wrapper around git-clone to apply user config.
+
+positional arguments:
+  identity        Identity to use. Can either be a path (must contain slash),
+                  or will be taken from
+                  \$GIT_CLONE_AS_IDENTITY_DIR/\$identity.gitconfig falling
+                  back to \$XDG_CONFIG_HOME/git/identities/\$identity.gitconfig
+  git_clone_args  Arguments forwarded directly to git-clone.
+
+options:
+  -h, --help      show this help message and exit
+EOF
+    exit 1
+fi
+
+
+# If it contains a slash, treat it like a path: 
+# Checks if a slash is a substring: https://stackoverflow.com/questions/2829613#8811800
+if [ "${1#*\/}" != "$1" ]; then
+    IDENTITY_FILE="$1"
+else
+    # Use $GIT_CLONE_AS_IDENTITY_DIR if exists, otherwise $XDG_CONFIG_DIR/git/identities
+    GIT_CLONE_AS_IDENTITY_DIR="${GIT_CLONE_AS_IDENTITY_DIR:-${XDG_CONFIG_DIR:-${HOME}/.config}/git/identities}"
+    IDENTITY_FILE="$GIT_CLONE_AS_IDENTITY_DIR/$1.gitconfig"
+fi
+
+if ! [ -f "$IDENTITY_FILE" ]; then
+    echo "Is not a file: '$IDENTITY_FILE'"
+    exit 1
+fi
+
+if ! [ -r "$IDENTITY_FILE" ]; then
+    echo "Is not readable: '$IDENTITY_FILE'"
+    exit 1
+fi
+
+shift
+git clone -c include.path="$IDENTITY_FILE" "$@"
