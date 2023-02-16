@@ -16,7 +16,6 @@ zcomet load 'mafredri/zsh-async'
 zcomet load 'kedestin/minimalxx'
 
 # zsh niceties
-zcomet load 'hlissner/zsh-autopair'
 zcomet load 'kedestin/auto-ls'
 zcomet load 'agkozak/zsh-z'
 zcomet load 'popstas/zsh-command-time'
