@@ -1,3 +1,5 @@
+theme="kanagawa"
+
 [editor]
 line-number = "relative"
 mouse = false
