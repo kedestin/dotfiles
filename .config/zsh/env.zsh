@@ -3,7 +3,7 @@
 
 local envdir="${0:a:h}/env.d"
 local -a envFiles
-envFiles=(ls nvm pyenv ripgrep git)
+envFiles=(ls ripgrep git)
 
 
 for envFile in $envFiles; do
