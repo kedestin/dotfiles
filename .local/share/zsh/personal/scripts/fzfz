@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+
+# Loosely based on https://github.com/andrewferrier/fzf-z
+# z must be available
+
+function recent_dirs {
+	zshz | tac | awk '{print $2}'
+}
+
+function list_dirs {
+	fd --color=never --hidden -t directory
+}
+
+function make_unique {
+	awk '!seen[$0]++'
+}
+
+{ recent_dirs; list_dirs } | make_unique
+
+for x in recent_dirs list_dirs make_unique; do
+	unfunction "$x"
+done

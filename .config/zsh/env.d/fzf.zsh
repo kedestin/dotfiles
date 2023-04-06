@@ -17,3 +17,12 @@
 }
 
 FZF_DEFAULT_COMMAND='fd -t file'
+
+
+# Integration with zshz
+if command -v zshz > /dev/null; then
+  local z_source="$functions_source[zshz]"
+  local fzfz="$XDG_DATA_HOME/zsh/personal/scripts/fzfz"
+  export FZF_ALT_C_COMMAND="source '$z_source' && source '$fzfz'"
+  # export FZF_ALT_C_OPTS='--tiebreaker=end'
+fi

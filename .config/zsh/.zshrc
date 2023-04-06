@@ -10,9 +10,9 @@ ENVFILE=${ZDOTDIR}/env.zsh
 KEYBINDFILE=${ZDOTDIR}/keybinds.zsh
 
 source "$ALIASFILE"
-source "$ENVFILE"
 source "$KEYBINDFILE"
 source "$PLUGINFILE"
+source "$ENVFILE"
 
 autoload -U compinit && compinit
 
