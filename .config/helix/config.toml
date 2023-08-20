@@ -12,6 +12,9 @@ select = "underline"
 [editor.file-picker]
 hidden = false
 
+[editor.lsp]
+display-inlay-hints = false
+
 [editor.whitespace.render]
 space = "all"
 tabs = "all"
