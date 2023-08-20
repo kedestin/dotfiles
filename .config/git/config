@@ -4,3 +4,6 @@
 
 [alias]
     root=rev-parse --show-toplevel
+
+[rebase]
+	autoStash = true
