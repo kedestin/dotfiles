@@ -4,7 +4,8 @@
 # z must be available
 
 function recent_dirs {
-	zshz | tac | awk '{print $2}'
+	# https://stackoverflow.com/questions/32812916#32814062
+	zshz | tac | awk '{$1=""}1' | awk '{$1=$1}1'
 }
 
 function list_dirs {
