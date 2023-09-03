@@ -5,5 +5,8 @@
 [alias]
     root=rev-parse --show-toplevel
 
+[diff]
+    algorithm=histogram
+
 [rebase]
 	autoStash = true
