@@ -10,3 +10,6 @@
 
 [rebase]
 	autoStash = true
+
+[user]
+    useConfigOnly = true
