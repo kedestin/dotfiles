@@ -13,3 +13,6 @@
 
 [user]
     useConfigOnly = true
+
+[core]
+    excludesfile = "~/.config/git/.gitignore"
