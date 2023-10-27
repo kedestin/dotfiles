@@ -21,6 +21,7 @@ zcomet load 'agkozak/zsh-z'
 zcomet load 'popstas/zsh-command-time'
 zcomet load 'kedestin/zsh-autoenv' # cd gets really slow if allowed to look up
 zcomet load 'Tarrasch/zsh-functional'
+zcomet load 'aloxaf/fzf-tab'
 zcomet load 'zsh-users/zsh-autosuggestions'
 zcomet load 'zsh-users/zsh-completions'
 zcomet load 'zsh-users/zsh-syntax-highlighting'
