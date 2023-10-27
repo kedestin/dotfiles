@@ -9,10 +9,12 @@ if (($CURRENT == 2)); then
   _alternative 'files:filename:_files' 'arg:custom arg:(${(u)identities})'
 elif (($CURRENT > 2)); then
   # Rewrite words to turn "git clone-as identity ..." to "git clone ..."
-  words=("${words[1]}" clone "${(@)words[3,$#words]}")
+
+  # $words is missing the leading `git` for a reason that's currently unclear
+  words=(git clone "${(@)words[3,$#words]}")
 
   # used to relaunch the completion context after words was modified
   # https://zsh.sourceforge.io/Doc/Release/Completion-System.html#index-_005fnormal
-  _normal -p git-clone-as
+  _normal
   return 
 fi
