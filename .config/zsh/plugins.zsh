@@ -51,3 +51,8 @@ export AUTO_LS_NEWLINE=false
 AUTO_LS_COMMANDS=(ls)
 
 export ZSHZ_DATA=${XDG_STATE_HOME}/z
+
+
+# set list-colors to enable filename colorizing for fzf-tab
+# Requires zsh-ls-colors plugin, or fzf-tab's binary module (run build-fzf-tab-module)
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
