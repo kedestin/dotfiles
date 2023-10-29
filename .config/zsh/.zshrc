@@ -11,8 +11,8 @@ KEYBINDFILE=${ZDOTDIR}/keybinds.zsh
 
 source "$ALIASFILE"
 source "$KEYBINDFILE"
-source "$PLUGINFILE"
 source "$ENVFILE"
+source "$PLUGINFILE"
 
 autoload -U compinit && compinit
 
