@@ -5,11 +5,9 @@ export -U PATH
 
 OPTIONSFILE=${ZDOTDIR}/options.zsh
 PLUGINFILE=${ZDOTDIR}/plugins.zsh
-ALIASFILE=${ZDOTDIR}/aliases.zsh
 ENVFILE=${ZDOTDIR}/env.zsh
 KEYBINDFILE=${ZDOTDIR}/keybinds.zsh
 
-source "$ALIASFILE"
 source "$KEYBINDFILE"
 source "$ENVFILE"
 source "$PLUGINFILE"
