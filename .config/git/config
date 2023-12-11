@@ -11,6 +11,9 @@
 [rebase]
 	autoStash = true
 
+[push]
+    autoSetupRemote = true
+
 [user]
     useConfigOnly = true
 
