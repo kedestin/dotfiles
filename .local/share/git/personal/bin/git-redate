@@ -1,0 +1,235 @@
+#!/usr/bin/env python3
+import argparse
+import csv
+import email.utils
+import os
+import re
+import shlex
+import shutil
+import subprocess
+import sys
+import tempfile
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Iterable, List, NamedTuple, NoReturn, Optional, TextIO, Union
+
+
+class RedateRow(NamedTuple):
+    commit_sha: str
+    author_date: datetime
+    subject: str
+
+
+GIT_PATH = shutil.which("git")
+
+REDATE_TODO_NAME = "git-redate-todo"
+
+
+def git(*args: str) -> str:
+    """Run git and return output
+
+    :param str *args: The command line arguments to provide to git
+    :returns: The standard output of the git command. Surrounding whitespace is removed
+    :rtype: str
+    """
+    return subprocess.run([GIT_PATH, *args], text=True, capture_output=True, check=True).stdout.strip()
+
+
+def launch_rebase_custom_editor(ref: str, rebase_args: List[str]) -> NoReturn:
+    """Replace the current process with an call to `git rebase --interactive` that uses this file as an editor.
+
+    This function does not return.
+
+    :param str ref: The git ref to rebase on
+    :param List[str] rebase_args: Arguments to forward to git-rebase
+    """
+    old_sequence_editor = git("var", "GIT_SEQUENCE_EDITOR")
+    new_sequence_editor = " ".join([sys.executable, *sys.argv, "--editor", old_sequence_editor, "--rebase-todo"])
+    os.execl(
+        GIT_PATH,
+        GIT_PATH,
+        "-c",
+        f"sequence.editor={new_sequence_editor}",
+        "rebase",
+        "--interactive",
+        ref,
+        *rebase_args,
+    )
+
+
+def redate_ongoing_rebase(ref: str, rebase_file: Path, editor: Optional[str]) -> int:
+    """Prompt user for author date edits, and inject changed dates into git-rebase-todo
+
+    :param str ref: The git ref to rebase from
+    :param Path rebase_file: The git-rebase-todo file
+    :param Optional[str] editor: The editor to open rebase_file file in.
+    """
+    abbrev_commit_hash, tab, author_date, subject = ("%h", "%x09", "%ad", "%s")
+    orig_log = git(
+        "log",
+        "--reverse",  # match ordering of git-rebase-todo
+        f"--pretty=format:{tab.join([abbrev_commit_hash, author_date, subject])}",
+        f"{ref}..HEAD",
+    )
+
+    with tempfile.TemporaryDirectory() as tempdir:
+        redate_todo = Path(tempdir, REDATE_TODO_NAME)
+        redate_todo.write_text(orig_log, encoding="utf-8")
+        open_in_editor(redate_todo)
+        edited_rows = parse_redate_todo(redate_todo.read_text(encoding="utf-8"))
+
+    changed_rows = set(edited_rows).difference(parse_redate_todo(orig_log))
+
+    if changed_rows:
+        update_author_dates_in_rebase_todo(changed_rows, rebase_file)
+        open_in_editor(rebase_file, editor=editor)
+
+    return 0
+
+
+def parse_redate_todo(s: str) -> List[RedateRow]:
+    """Parse a git-redate todo file.
+
+    The file format is a TSV where each row is a commit_sha, author date, subject
+        * commit_sha is a short git commit hash
+        * author_date is of the form "RFC_2822_TIMESTAMP ((+|-) TIME_DELTA)*"
+            where TIME_DELTA is a string of the form "NUM UNITS" where UNITS is (seconds, minutes, days, weeks, etc...)
+        * subject is a string
+
+    :param str s: The text of the redate todo file
+    :return: A list of redate rows
+    :rtype: List[RedateRow]
+    """
+    return [
+        RedateRow(
+            commit_sha=row["commit_sha"],
+            author_date=resolve_datetime(row["author_date"]),
+            subject=row["subject"],
+        )
+        for row in csv.DictReader(
+            s.splitlines(),
+            delimiter="\t",
+            fieldnames=["commit_sha", "author_date", "subject"],
+        )
+    ]
+
+
+def update_author_dates_in_rebase_todo(changed_rows: Iterable[RedateRow], rebase_file: Path) -> None:
+    """Write an updated rebase todo file that runs `git commit` to update author dates for changed rows.
+
+    :param Iterable[RedateRow] changed_rows: The redate rows that were edited by the user.
+    :param Path rebase_file: The path to the rebase todo.
+    """
+    date_dict = {row.commit_sha: row.author_date for row in changed_rows}
+
+    def generate_exec_commands():
+        """Inject an `exec git commit` command after git rebase lines that pick a changed commit."""
+        for line in rebase_file.read_text(encoding="utf-8").splitlines():
+            yield line
+
+            split = line.split(" ", maxsplit=2)
+
+            if len(split) == 3 and split[0] == "pick" and split[1] in date_dict:
+                new_timestamp = email.utils.format_datetime(date_dict[split[1]])
+                yield f'exec git commit --quiet --amend --no-edit --no-verify --date="{new_timestamp}"'
+
+    rebase_file.write_text("\n".join(generate_exec_commands()), encoding="utf-8")
+
+
+def open_in_editor(file: Union[os.PathLike, str], *, editor: Optional[str] = None) -> None:
+    """Open a file in editor.
+
+
+    :param Union[os.PathLike,str] file: The file to open
+    :keyword Optional[str] editor: The editor to open in. Will be split into arguments according to shell parsing rules.
+        If editor is None, default to the git editor.
+    """
+    editor = editor or git("var", "GIT_EDITOR")
+    subprocess.run([*shlex.split(editor), str(file)])
+
+
+def resolve_datetime(s: str) -> datetime:
+    """Make a datetime from the author_date field of git redate todo
+
+    The input string is of the form "RFC_2822_TIMESTAMP ((+|-) TIME_DELTA)*" where TIME_DELTA is a string of
+    the form "NUM UNITS" where UNITS is (seconds, minutes, days, weeks, etc...)
+
+    :param str s: The input string
+    :return: A timezone aware datetime
+    :rtype: datetime
+    """
+
+    def make_timedelta(s2: str) -> timedelta:
+        """Make a timedelta out of a 'NUM UNIT (NUM UNIT)*' string."""
+
+        def _make_timedelta_piece(match: re.Match) -> timedelta:
+            """Make a timedelta out of a 'NUM UNIT' string."""
+            timedict = {
+                "s": "seconds",
+                "m": "minutes",
+                "h": "hours",
+                "d": "days",
+                "w": "weeks",
+            }
+            return timedelta(**{timedict[match.group(2)[:1]]: int(match.group(1))})
+
+        results = re.finditer(
+            "(-?\d+)\s*(s|sec|seconds?|m|min|minutes?|h|hr|hours?|d|days?|w|wk|weeks?)",
+            s2,
+        )
+
+        return sum((_make_timedelta_piece(m) for m in results), start=timedelta())
+
+    parts = re.split(r"(\s+[+\-]\s+)", s)
+    parts.reverse()
+
+    dt = email.utils.parsedate_to_datetime(parts.pop())
+
+    while parts:
+        operator = parts.pop().strip()
+        operand = make_timedelta(parts.pop().strip())
+
+        if "+" == operator:
+            dt += operand
+        elif "-" == operator:
+            dt -= operand
+        else:
+            raise ValueError(f"Invalid operator {operator!r}")
+
+    return dt
+
+
+def main(
+    ref: str,
+    *,
+    rebase_args: List[str],
+    rebase_todo: Optional[Path] = None,
+    editor: Optional[str],
+) -> int:
+    if rebase_todo is not None:
+        return redate_ongoing_rebase(ref, rebase_todo, editor)
+    else:
+        launch_rebase_custom_editor(ref, rebase_args)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description=" ".join(
+            [
+                "A git subcommand that streamlines updating the author date of a sequence of commits. This command",
+                "is a thin wrapper around an interactive git-rebase, and as such accepts all the same parameters.",
+            ]
+        )
+    )
+    parser.add_argument("ref", help="The git ref to rebase from")
+    internal_params = parser.add_argument_group()
+    """A collection of parameters that are *not* user facing, leveraged when this script relaunches
+    itself as the `git rebase` editor.
+    """
+
+    internal_params.add_argument("--rebase-todo", required=False, type=Path, help=argparse.SUPPRESS)
+    internal_params.add_argument("--editor", required=False, type=str, help=argparse.SUPPRESS)
+
+    args, unknown_args = parser.parse_known_args()
+    sys.exit(main(**vars(args), rebase_args=unknown_args))

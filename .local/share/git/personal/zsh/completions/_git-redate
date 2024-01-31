@@ -1,0 +1,14 @@
+#!/usr/bin/env zsh
+
+# https://stackoverflow.com/questions/73270562#73356136
+
+if (( CURRENT > 1 )); then
+  # Rewrite words to turn "git redate ..." to "git rebase ..."
+  # $words is missing the leading `git` for a reason that's currently unclear
+  words=(git rebase "${(@)words[2,$#words]}")
+  CURRENT=$(( CURRENT + 1 ))
+  # used to relaunch the completion context after words was modified
+  # https://zsh.sourceforge.io/Doc/Release/Completion-System.html#index-_005fnormal
+  _normal -P
+  return
+fi
