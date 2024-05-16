@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#
+# Summary: Create a virtual environment
+#
+# Usage: pyenv venv python_version venv_dir
+#
+# Create a virtual environment with the specified version of python.
+#
+# Will auto resolve version prefixes to the latest installed version
+# of python. The requested version of python will automatically be
+# installed if one is not available.
+
+set -e
+[ -n "$PYENV_DEBUG" ] && set -x
+
+# Optional: Abort with usage line when called with invalid arguments
+# (replace COMMAND with the name of this command)
+if (( $# != 2 )); then
+  pyenv-help --usage venv  >&2
+  exit 1
+fi
+
+
+resolved_version=$(pyenv-latest "$1" || true)
+
+if [ -z "$resolved_version" ]; then
+  pyenv install "$1"
+  resolved_version=$(pyenv-latest "$1")
+fi
+
+PYENV_VERSION="$resolved_version" pyenv-exec python -m venv "$2"
