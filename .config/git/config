@@ -22,3 +22,6 @@
 
 [core]
     excludesfile = "~/.config/git/.gitignore"
+
+[commit]
+    verbose = true
