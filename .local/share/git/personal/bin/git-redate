@@ -175,7 +175,7 @@ def resolve_datetime(s: str) -> datetime:
             return timedelta(**{timedict[match.group(2)[:1]]: int(match.group(1))})
 
         results = re.finditer(
-            "(-?\d+)\s*(s|sec|seconds?|m|min|minutes?|h|hr|hours?|d|days?|w|wk|weeks?)",
+            r"(-?\d+)\s*(s|sec|seconds?|m|min|minutes?|h|hr|hours?|d|days?|w|wk|weeks?)",
             s2,
         )
 
