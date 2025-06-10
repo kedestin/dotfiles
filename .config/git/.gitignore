@@ -1,2 +1,7 @@
-# Global Gitignore
+#####################
+#  Global Gitignore #
+#####################
+
+# Project level config folder for https://github.com/helix-editor/helix
 .helix/
+
