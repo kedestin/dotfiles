@@ -5,3 +5,6 @@
 # Project level config folder for https://github.com/helix-editor/helix
 .helix/
 
+# Config files for zsh plugin https://github.com/kedestin/zsh-autoenv
+.autoenv.zsh
+.autoenv_leave.zsh
