@@ -1,5 +1,5 @@
-HISTSIZE=400
-SAVEHIST=400
+HISTSIZE=1600
+SAVEHIST=1600
 HISTFILE=${XDG_STATE_HOME}/zsh/history
 
 # Autoload personal zsh functions
