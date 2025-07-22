@@ -3,6 +3,7 @@ theme="kanagawa"
 [editor]
 line-number = "relative"
 mouse = false
+jump-label-alphabet = "fjdksla;tybnrueiwoqpvmcxz"
 
 [editor.cursor-shape]
 insert = "bar"
@@ -38,3 +39,6 @@ pageup = "no_op"
 pagedown = "no_op"
 home = "no_op"
 end = "no_op"
+
+# Make jumping to locations easier in normal mode
+ret = "goto_word"
