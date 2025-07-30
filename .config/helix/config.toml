@@ -42,3 +42,10 @@ end = "no_op"
 
 # Make jumping to locations easier in normal mode
 ret = "goto_word"
+
+[keys.normal.space]
+
+# Swap default keymap to make most used easier
+R = "rename_symbol"
+r = "replace_selections_with_clipboard"
+
