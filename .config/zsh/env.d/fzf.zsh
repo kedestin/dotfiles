@@ -1,6 +1,8 @@
 #!/usr/bin/env zsh
 
-if command -v fzf-share > /dev/null ; then
+if (command -v fzf && fzf --zsh 2>&1) > /dev/null; then
+  source <(fzf --zsh)
+elif command -v fzf-share > /dev/null ; then
   source "$(fzf-share)"/completion.zsh
   source "$(fzf-share)"/key-bindings.zsh
 else
