@@ -4,6 +4,7 @@ theme="kanagawa"
 line-number = "relative"
 mouse = false
 jump-label-alphabet = "fjdksla;tybnrueiwoqpvmcxz"
+end-of-line-diagnostics = "disable"
 
 [editor.cursor-shape]
 insert = "bar"
@@ -12,6 +13,9 @@ select = "underline"
 
 [editor.file-picker]
 hidden = false
+
+[editor.inline-diagnostics]
+other-lines = "disable"
 
 [editor.lsp]
 display-inlay-hints = true
