@@ -33,6 +33,9 @@ setopt EXTENDED_HISTORY
 # the line is a space, or when one of the expanded aliases contains a leading space.
 setopt HIST_IGNORE_SPACE
 
+# When using history expansion (!!, !$, etc), show the expanded command first instead of executing immediately
+setopt HIST_VERIFY
+
 # ===== Completion 
 
 # Allow completion from within a word/phrase
