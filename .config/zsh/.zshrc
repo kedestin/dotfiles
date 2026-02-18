@@ -8,8 +8,8 @@ PLUGINFILE=${ZDOTDIR}/plugins.zsh
 ENVFILE=${ZDOTDIR}/env.zsh
 KEYBINDFILE=${ZDOTDIR}/keybinds.zsh
 
-source "$KEYBINDFILE"
 source "$ENVFILE"
+source "$KEYBINDFILE"
 source "$PLUGINFILE"
 
 autoload -U compinit && compinit
