@@ -2,6 +2,7 @@ theme="kanagawa"
 
 [editor]
 line-number = "relative"
+rainbow-brackets = true
 mouse = false
 jump-label-alphabet = "fjdksla;tybnrueiwoqpvmcxz"
 end-of-line-diagnostics = "disable"
