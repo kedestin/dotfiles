@@ -7,6 +7,10 @@ mouse = false
 jump-label-alphabet = "fjdksla;tybnrueiwoqpvmcxz"
 end-of-line-diagnostics = "disable"
 
+[editor.workspace-trust]
+level = "servers"
+prompt = true
+
 [editor.cursor-shape]
 insert = "bar"
 normal = "block"
